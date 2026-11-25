@@ -17,12 +17,19 @@ JOKE = (
     "I said, 'No, son, that's just the moon being shady.'"
 )
 
-OUTPUT_PATH = "/output/entry.txt"
+# The bounty gate: UTF-8 text of 1 to 200 characters, not only whitespace.
+# Fail loudly instead of shipping an entry the gate would refuse.
+assert JOKE and not JOKE.isspace() and len(JOKE) <= 200, (
+    f"joke violates the 1-200 character gate: {len(JOKE)} characters"
+)
+assert "\n" not in JOKE, "joke must be a single line"
 
 
 def main() -> None:
-    os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
-    with open(OUTPUT_PATH, "w", encoding="utf-8", newline="") as f:
+    out_dir = os.environ.get("MAKEFUN_OUTPUT_DIR", "/output")
+    path = os.path.join(out_dir, "entry.txt")
+    os.makedirs(out_dir, exist_ok=True)
+    with open(path, "w", encoding="utf-8", newline="") as f:
         f.write(JOKE)
     print(JOKE)
 
